@@ -1,4 +1,4 @@
-import { BrowserRouter } from 'react-router';
+import { HashRouter } from 'react-router';
 import { Routes, Route } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 
@@ -13,7 +13,7 @@ import Layout from './pages/layout/Layout';
 
 function App() {
   return (
-      <BrowserRouter>
+      <HashRouter>
       <Routes>
         {/* esta armado para que estos tengan el mismo layout: header y abajo las cosas
         especificas de cada vista, excepto login. Se puede analizar que queremos que tenga
@@ -27,7 +27,7 @@ function App() {
         </Route>
         <Route path="/login" element={<LoginPage/>} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
