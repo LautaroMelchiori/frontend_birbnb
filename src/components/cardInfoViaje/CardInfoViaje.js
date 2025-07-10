@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Card, CardContent, Typography, Button, CircularProgress } from "@mui/material";
+import {Box, Card, CardContent, Typography, Button, CircularProgress,Dialog, DialogTitle, DialogContent, DialogActions} from "@mui/material";
 import DropdownHuespedes from "../dropdownHuespedes/DropdownHuespedes";
 import { FiltroRangoFechas } from "../filtroRangoFechas/FiltroRangoFechas";
 import { fetchAlojamiento } from "../../api/api";
@@ -9,11 +9,6 @@ import { useNavigate } from "react-router-dom";
 
 // Funciones auxiliares para valores por defecto
 const hoy = () => new Date().toLocaleDateString("en-US");
-const manana = () => {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return d.toLocaleDateString("en-US");
-};
 
 const CardInfoViaje = () => {
   const { id } = useParams();
@@ -23,9 +18,12 @@ const CardInfoViaje = () => {
 
   const [datosReserva, setDatosReserva] = useState({
     fechaInicio: hoy(),
-    fechaFin: manana(),
+    fechaFin: hoy(),
     cantHuespedes: 1,
   });
+
+  const [modalExito, setModalExito] = useState(false);
+  const [modalError, setModalError] = useState(false);
 
   const actualizarDato = (campo, valor) => {
     setDatosReserva((prev) => ({
@@ -69,7 +67,7 @@ const CardInfoViaje = () => {
     try {
       const reserva = {
         alojamientoId: alojamiento.id,
-        usuarioId: "68367724102a6bf29a3d1eee", // leo hardcodeado
+        usuarioId: "6835f4add17340a15cb50737", // ulises hardcodeado 
         rangoFechas: {
           fechaInicio: new Date(datosReserva.fechaInicio),
           fechaFin: new Date(datosReserva.fechaFin)
@@ -78,12 +76,13 @@ const CardInfoViaje = () => {
       };
 
       const resultado = await crearReservaBackend(reserva);
-      if (resultado != -1) {alert("Reserva realizada con éxito ✔️");
-      console.log("Reserva creada:", resultado);
-      navigate(`/reservas/${reserva.usuarioId}`);
+
+      if (resultado !== -1) {
+        setModalExito(true);
+      } else {
+        setModalError(true);
       }
     } catch (error) {
-      alert("Error al crear la reserva ❌");
       console.error("POST falló:", error);
     }
   };
@@ -118,6 +117,37 @@ const CardInfoViaje = () => {
         >
           Confirmar Reserva
         </Button>
+        
+
+        {/* Modal de Éxito */}
+        <Dialog open={modalExito} onClose={() => setModalExito(false)}>
+          <DialogTitle>✅ ¡Reserva confirmada!</DialogTitle>
+          <DialogContent>
+            Tu reserva fue realizada con éxito
+          </DialogContent>
+          <DialogActions>
+              <Button onClick={() => {
+                setModalExito(false);
+                navigate(`/reservas/6835f4add17340a15cb50737`);
+              }}>
+              Ir a mis reservas
+              </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Modal de Error */}
+        <Dialog open={modalError} onClose={() => setModalError(false)}>
+          <DialogTitle>❌ Error</DialogTitle>
+          <DialogContent>
+            La reserva no se encuentra disponible en las fechas seleccionadas.
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setModalError(false)}>Cerrar</Button>
+          </DialogActions>
+        </Dialog>
+
+
+
       </CardContent>
     </Card>
   );

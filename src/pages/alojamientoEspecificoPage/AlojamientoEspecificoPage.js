@@ -52,7 +52,7 @@ const AlojamientoEspecificoPage = () => {
   }, [id]);
 
   // seria la verificacion de no encontrarlo
-  if (!alojamiento) return <div>Alojamiento no encontrado</div>;
+  if (!alojamiento) return <div>Producto no encontrado</div>;
 
   return (
     <>
