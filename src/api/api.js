@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4500";
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-birbnb-ftd3.onrender.com";
 
 export const fetchAlojamientosBackend = async (filtros = {}) => {
   /*
@@ -137,3 +137,16 @@ export const cancelarReservaBackend = async (idReserva) => {
     return -1;
   }
 }
+
+export const crearAlojamientoBackend = async (alojamiento) => {
+  const url = `${API_BASE_URL}/alojamientos`;
+  try {
+    const response = await axios.post(url, alojamiento);
+    console.log("Alojamiento creado:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("POST falló:", error.response?.data || error);
+    return -1;
+  }
+};
+
